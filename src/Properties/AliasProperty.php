@@ -2,15 +2,16 @@
 
 namespace RebelCode\Entities\Properties;
 
+use OutOfBoundsException;
 use RebelCode\Entities\Api\EntityInterface;
 use RebelCode\Entities\Api\PropertyInterface;
 
 /**
- * A simple implementation of a property that just reads and writes values to/from the data store.
+ * A property implementation that acts as an alias of another property.
  *
  * @since [*next-version*]
  */
-class Property implements PropertyInterface
+class AliasProperty implements PropertyInterface
 {
     /**
      * @since [*next-version*]
@@ -24,7 +25,7 @@ class Property implements PropertyInterface
      *
      * @since [*next-version*]
      *
-     * @param string $key The data store key to read from and write to.
+     * @param string $key The key of the original property to be aliased.
      */
     public function __construct($key)
     {
@@ -38,7 +39,7 @@ class Property implements PropertyInterface
      */
     public function getValue(EntityInterface $entity)
     {
-        return $entity->getStore()->get($this->key);
+        return $entity->get($this->key);
     }
 
     /**
@@ -48,6 +49,6 @@ class Property implements PropertyInterface
      */
     public function setValue(EntityInterface $entity, $value)
     {
-        return [$this->key => $value];
+        return $entity->set([$this->key => $value]);
     }
 }

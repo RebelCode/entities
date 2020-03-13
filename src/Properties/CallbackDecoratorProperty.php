@@ -10,7 +10,7 @@ use RebelCode\Entities\Api\PropertyInterface;
  *
  * @since [*next-version*]
  */
-class CallbackDecoratorProperty extends AbstractDecoratorProperty
+class CallbackDecoratorProperty implements PropertyInterface
 {
     /**
      * @since [*next-version*]
@@ -39,14 +39,14 @@ class CallbackDecoratorProperty extends AbstractDecoratorProperty
      * @since [*next-version*]
      *
      * @param PropertyInterface $property The property instance to decorate.
-     * @param callable|null     $getter   The getter callback. Receives the entity instance and value as arguments and
+     * @param callable|null     $getter   The getter callback. Recieves the entity instance and value as arguments and
      *                                    should return a value. Invoked after the decorated instance's getter.
      * @param callable|null     $setter   The setter callback. Receives the entity instance and value as arguments and
      *                                    should return a commit array. Invoked after the decorated instance's setter.
      */
     public function __construct(PropertyInterface $property, callable $getter = null, callable $setter = null)
     {
-        parent::__construct($property);
+        $this->property = $property;
         $this->getter = $getter;
         $this->setter = $setter;
     }
@@ -56,8 +56,10 @@ class CallbackDecoratorProperty extends AbstractDecoratorProperty
      *
      * @since [*next-version*]
      */
-    protected function getter(EntityInterface $entity, $value)
+    public function getValue(EntityInterface $entity)
     {
+        $value = $this->property->getValue($entity);
+
         return is_callable($this->getter)
             ? call_user_func_array($this->getter, [$entity, $value])
             : $value;
@@ -68,10 +70,12 @@ class CallbackDecoratorProperty extends AbstractDecoratorProperty
      *
      * @since [*next-version*]
      */
-    protected function setter(EntityInterface $entity, $value)
+    public function setValue(EntityInterface $entity, $value)
     {
+        $commit = $this->property->setValue($entity, $value);
+
         return is_callable($this->setter)
-            ? call_user_func_array($this->setter, [$entity, $value])
-            : $value;
+            ? call_user_func_array($this->setter, [$entity, $value, $commit])
+            : $commit;
     }
 }

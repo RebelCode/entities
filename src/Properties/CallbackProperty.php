@@ -15,14 +15,14 @@ class CallbackProperty implements PropertyInterface
     /**
      * @since [*next-version*]
      *
-     * @var callable|null
+     * @var callable
      */
     protected $getter;
 
     /**
      * @since [*next-version*]
      *
-     * @var callable|null
+     * @var callable
      */
     protected $setter;
 
@@ -31,12 +31,11 @@ class CallbackProperty implements PropertyInterface
      *
      * @since [*next-version*]
      *
-     * @param callable|null $getter The getter callback. Receives the entity instance as arguments and should return
-     *                              the property value.
-     * @param callable|null $setter The setter callback. Receives the entity instance and value as arguments and should
-     *                              return a commit as an associative array that maps store keys to their new value.
+     * @param callable $getter The getter callback. Receives the entity instance as arguments and should return a value.
+     * @param callable $setter The setter callback. Receives the entity instance and value as arguments and should
+     *                         return a commit array.
      */
-    public function __construct(callable $getter = null, callable $setter = null)
+    public function __construct(callable $getter, callable $setter)
     {
         $this->getter = $getter;
         $this->setter = $setter;
@@ -49,10 +48,6 @@ class CallbackProperty implements PropertyInterface
      */
     public function getValue(EntityInterface $entity)
     {
-        if (!is_callable($this->getter)) {
-            return null;
-        }
-
         return call_user_func_array($this->getter, [$entity]);
     }
 
@@ -63,10 +58,6 @@ class CallbackProperty implements PropertyInterface
      */
     public function setValue(EntityInterface $entity, $value)
     {
-        if (!is_callable($this->setter)) {
-            return [];
-        }
-
         return call_user_func_array($this->setter, [$entity, $value]);
     }
 }

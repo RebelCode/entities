@@ -2,11 +2,17 @@
 
 namespace RebelCode\Entities\Properties;
 
+use OutOfBoundsException;
 use RebelCode\Entities\Api\EntityInterface;
 use RebelCode\Entities\Api\PropertyInterface;
 
 /**
  * Abstract implementation of a property that decorates another property.
+ *
+ * Implementations will need to implement the {@link getter()} and {@link setter()} methods. The getter is invoked
+ * _after_ the original property's value is retrieved, giving this instance a chance to modify the outgoing value.
+ * The setter is invoked _before_ the original property's {@link PropertyInterface::setValue()}, giving this instance
+ * a chance to modify in value that is given to the original property.
  *
  * @since [*next-version*]
  */

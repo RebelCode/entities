@@ -9,9 +9,6 @@ use RebelCode\Entities\Api\PropertyInterface;
 /**
  * An implementation of a property that will default to a series of data store keys until a valid value is found.
  *
- * All write operations are done to the first store key given. Read operations are attempted for each key, in the order
- * they are given, until a store key yields a value.
- *
  * @since [*next-version*]
  */
 class DefaultingProperty implements PropertyInterface
